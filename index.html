@@ -10,82 +10,44 @@
   <meta property="og:image" content="pictures/logo.jpg">
   <title>Hội Khóa 20 Năm – THPT Cư Jút 2003–2006</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&family=Dancing+Script:wght@400;500;600;700&display=swap" rel="stylesheet">
-  
   <script src="assets/polyfills.js"></script>
   <script src="assets/main.js" defer></script>
   <link rel="stylesheet" href="assets/style.css">
-
-  <style>
-    body { padding-bottom: 60px; }
-    .bottom-ticker-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(11, 21, 41, 0.95); border-top: 1px solid rgba(212, 168, 67, 0.3); z-index: 998; display: flex; flex-direction: column; justify-content: center; padding: 6px 0; box-shadow: 0 -4px 10px rgba(0,0,0,0.5); backdrop-filter: blur(8px); overflow: hidden; }
-    .marquee-container { width: 100%; overflow: hidden; white-space: nowrap; position: relative; }
-    .marquee-content { display: inline-block; padding-left: 100%; color: var(--gold-light); font-weight: 600; font-size: 0.95rem; animation: marqueeScroll 20s linear infinite; }
-    .marquee-content span { margin-right: 40px; }
-    @keyframes marqueeScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
-    @keyframes blinkStats { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-    .stats-line { text-align: center; color: #a0aec0; font-size: 0.75rem; margin-top: 4px; padding: 0 10px; animation: blinkStats 2s infinite ease-in-out; }
-    .stats-line strong { color: var(--gold); }
-    .fab-register { position: fixed; bottom: 75px; right: 20px; background: linear-gradient(135deg, #d4a843, #c4962a); color: #0b1529; padding: 12px 20px; border-radius: 50px; font-weight: 700; font-size: 0.9rem; text-decoration: none; box-shadow: 0 4px 15px rgba(212, 168, 67, 0.4); z-index: 999; display: flex; align-items: center; gap: 8px; transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.2); }
-    .fab-register:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(212, 168, 67, 0.6); color: #000; }
-    .fab-icon { font-size: 1.2rem; animation: pulse 2s infinite; }
-    @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
-    @media (max-width: 600px) { .fab-register { padding: 10px 15px; font-size: 0.85rem; bottom: 70px; } }
-    .vd-loading { text-align: center; color: var(--gold-light); font-style: italic; padding: 40px; width: 100%; }
-    .drive-iframe-container { position: relative; width: 100%; padding-bottom: 56.25%; background: #000; }
-    .drive-iframe-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
-  </style>
 </head>
 <body>
-  <canvas id="pc"></canvas>
-  <nav class="nav" id="nav">
-    <div class="nav-logo"><img src="pictures/logo.jpg" alt="Logo" loading="lazy" style="height: 44px; width: auto; object-fit: contain;"></div>
-    <ul class="nav-links">
-      <li><a href="#about">Giới Thiệu</a></li><li><a href="#gallery">Ký Ức</a></li><li><a href="#drive-media">Thước Phim</a></li><li><a href="#schedule">Lịch Trình</a></li><li><a href="#cost">Kinh Phí</a></li><li><a href="#sponsors">Tài Trợ</a></li><li><a href="#location">Địa Điểm</a></li><li><a href="#faq">FAQ</a></li>
-    </ul>
-    <button class="nav-burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
-  </nav>
-
   <audio id="bgMusic" loop preload="auto"></audio>
   <script>
     const playlist = [
       { title: "Chuyện Để Dành (Gốc)", src: "https://cldup.com/8ogyw5uhR6.mp3" },
+      { title: "Chuyện Để Dành (Mỹ Tâm Live)", src: "https://www.youtube.com/watch?v=V_YhGVnEGf8" },
       { title: "Chuyện Để Dành (Cover)", src: "https://www.youtube.com/watch?v=GPHtOHl0OJQ" }
     ];
+
     let currentTrack = 0;
     const audioPlayer = document.getElementById('bgMusic');
 
     function playNext() {
       currentTrack = (currentTrack + 1) % playlist.length;
       audioPlayer.src = playlist[currentTrack].src;
-      audioPlayer.play().catch(e => console.log("Chờ tương tác"));
+      audioPlayer.play().catch(e => console.log("Đợi tương tác..."));
     }
 
-    // Khởi tạo bài đầu
     audioPlayer.src = playlist[0].src;
     audioPlayer.addEventListener('ended', playNext);
 
-    // Tự động phát sau khi tương tác lần đầu
-    document.addEventListener('click', function musicAutoPlay() {
-      if (audioPlayer.paused) { audioPlayer.play().catch(e => console.log("Autoplay bị chặn")); }
-      document.removeEventListener('click', musicAutoPlay);
-    }, { once: true });
-
-    // Nút điều khiển (Bật/Tắt)
-    document.getElementById('musicBtn').addEventListener('click', () => {
-      if (audioPlayer.paused) audioPlayer.play();
-      else audioPlayer.pause();
-    });
+    // Kích hoạt nhạc ngay khi người dùng chạm/click vào trang
+    function startMusic() {
+      audioPlayer.play().then(() => {
+        document.removeEventListener('click', startMusic);
+        document.removeEventListener('scroll', startMusic);
+      }).catch(e => console.log("Chờ người dùng tương tác"));
+    }
+    document.addEventListener('click', startMusic, { once: true });
+    document.addEventListener('scroll', startMusic, { once: true });
   </script>
-
-  <a href="#registration" class="fab-register" id="fabBtn"><span class="fab-icon">💌</span><span class="fab-text">Đăng Ký Ngay</span></a>
-  <div class="bottom-ticker-bar">
-    <div class="marquee-container"><div class="marquee-content" id="tickerNames"><span>Đang kết nối dữ liệu đăng ký...</span></div></div>
-    <div class="stats-line" id="tickerStats">Tổng người đăng ký: <strong>0</strong>  |  Lớp tham gia đông nhất: <strong>Đang tải...</strong></div>
-  </div>
 
   </body>
 </html>
